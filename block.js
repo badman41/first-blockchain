@@ -3,24 +3,19 @@ const BLOCKTIME = 10e3
 const MIN_DIFFICULTY = 2
 
 class Block {
-    constructor(data, previousHash, difficulty = MIN_DIFFICULTY) {
-        this.timestamp = Date.now()
+    constructor(timestamp, data, previousHash, hash, nonce, difficulty = MIN_DIFFICULTY) {
+        this.timestamp = timestamp
         this.data = data
         this.previousHash = previousHash
-        this.hash = this.calculateHash()
-        this.nonce = 0
+        this.nonce = nonce
         this.difficulty = difficulty
+        this.hash = hash
     }
-
-    calculateHash() {
-        return sha256(`${this.timestamp}${JSON.stringify(this.data)}${this.previousHash}${this.nonce}${this.difficulty}`).toString()
-    }
-    
 
     static genesisBlock() {
-        return new Block({
+        return new Block('', {
             name: 'genesis block'
-        }, 'genesis-hash')
+        }, 'genesis-hash', '', 0)
     }
 
 
@@ -29,26 +24,29 @@ class Block {
         timestamp   : ${this.timestamp}
         lastHash    : ${this.lastHash}
         hash        : ${this.hash}
-        data        : ${this.data}`
+        data        : ${this.data}
+        nonce        : ${this.nonce}
+        difficulty        : ${this.difficulty}`
     }
 
     static mineBlock(lastBlock, data) {
         let timestamp = Date.now()
         let nonce = 0
         let hash
-        let dificulty = lastBlock.dificulty
+        let difficulty = lastBlock.difficulty
         do {
             timestamp = Date.now()
             nonce++
-            dificulty = Block.adjustDificulty(lastBlock, timestamp)
-            hash = SHA256(`${timestamp}${lastBlock.hash}${data}${nonce}${dificulty}`).toString()
+            difficulty = Block.adjustdifficulty(lastBlock, timestamp)
+            hash = sha256(`${timestamp}${lastBlock.hash}${data}${nonce}${difficulty}`).toString()
         }
-        while (hash.substring(0, dificulty) !== '0'.repeat(dificulty))
-        return new this(timestamp, lastBlock.hash, hash, data, nonce, dificulty)
+        while (hash.substring(0, difficulty) !== '0'.repeat(difficulty))
+        // return new this(timestamp, lastBlock.hash, hash, data, nonce, difficulty)
+        return new this(timestamp, data, lastBlock.hash, hash, nonce, difficulty)
     }
 
-    static adjustDificulty(lastBlock, timestamp) {
-        return (lastBlock.timestamp + BLOCKTIME) > timestamp ? (lastBlock.dificulty + 1) : (lastBlock.dificulty - 1)
+    static adjustdifficulty(lastBlock, timestamp) {
+        return (lastBlock.timestamp + BLOCKTIME) > timestamp ? (lastBlock.difficulty + 1) : (lastBlock.difficulty - 1)
     }
 
 }
