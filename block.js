@@ -32,19 +32,19 @@ class Block {
         data        : ${this.data}`
     }
 
-    static mineBlock(lastBlack, data) {
+    static mineBlock(lastBlock, data) {
         let timestamp = Date.now()
         let nonce = 0
         let hash
-        let dificulty = lastBlack.dificulty
+        let dificulty = lastBlock.dificulty
         do {
             timestamp = Date.now()
             nonce++
-            dificulty = Block.adjustDificulty(lastBlack, timestamp)
-            hash = SHA256(`${timestamp}${lastBlack.hash}${data}${nonce}${dificulty}`).toString()
+            dificulty = Block.adjustDificulty(lastBlock, timestamp)
+            hash = SHA256(`${timestamp}${lastBlock.hash}${data}${nonce}${dificulty}`).toString()
         }
         while (hash.substring(0, dificulty) !== '0'.repeat(dificulty))
-        return new this(timestamp, lastBlack.hash, hash, data, nonce, dificulty)
+        return new this(timestamp, lastBlock.hash, hash, data, nonce, dificulty)
     }
 
     static adjustDificulty(lastBlock, timestamp) {

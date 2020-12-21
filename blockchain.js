@@ -5,11 +5,18 @@ class BlockChain {
         this.chain = [Block.genesisBlock()]
     }
 
-    mineBlock(data) {
+    addBlock(data) {
         const lastBlock = this.chain[this.chain.length - 1]
         const block = new Block(data, lastBlock.hash, lastBlock.difficulty)
-        block.mine(lastBlock.difficulty, lastBlock.timestamp)
-        this.chain.push(block);
+        this.chain.push(block)
+        return block
+    }
+
+    mineBlock(data) {
+        const lastBlock = this.chain[this.chain.length - 1]
+        const block = Block.mineBlock(lastBlock, data)
+        this.chain.push(block)
+        return block
     }
 
     toString() {
