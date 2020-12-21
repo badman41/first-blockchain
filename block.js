@@ -17,7 +17,7 @@ class Block {
     }
     
 
-    createGenesisBlock() {
+    static genesisBlock() {
         return new Block({
             name: 'genesis block'
         }, 'genesis-hash')
